@@ -1,3 +1,6 @@
+using CSharpSmartHomeApplication;
+using CSharpSmartHomeCore;
+
 namespace CSharpSmartHome
 {
     internal static class Program
@@ -12,6 +15,11 @@ namespace CSharpSmartHome
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
+
+            var factory = new ThermometerFactory();
+            var thermometer = factory.CreateThermometer(ThermometerType.I2C);
+            
+            var temperature = thermometer.GetTemperature();
         }
     }
 }

@@ -9,8 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CSharpSmartHomeApplication\CSharpSmartHomeApplication.csproj" />
-    <ProjectReference Include="..\CSharpSmartHomeCore\CSharpSmartHomeCore.csproj" />
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
   </ItemGroup>
 
 </Project>
