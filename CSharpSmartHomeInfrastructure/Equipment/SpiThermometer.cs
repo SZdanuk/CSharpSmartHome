@@ -6,6 +6,9 @@ public class SpiThermometer : IThermometer
 {
     public float GetTemperature()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
+
+        float temperature = 36.6F;
+        return temperature;
     }
 }
