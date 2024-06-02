@@ -10,7 +10,7 @@ using CSharpSmartHomeApplication.AutomationSystemComponents;
 
 namespace CSharpSmartHomeCore
 {
-    internal class ThermometerFactory : IThermometerFactory
+    public class ThermometerFactory : IThermometerFactory
     {
 
         public IThermometer CreateThermometer(ThermometerType thermometerType)
