@@ -28,36 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
-            textBox1 = new TextBox();
+            getTempButton = new Button();
+            temperatureOutput = new TextBox();
             SuspendLayout();
             // 
-            // button1
+            // getTempButton
             // 
-            button1.Location = new Point(304, 182);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 0;
-            button1.Text = "Get temp";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            getTempButton.Location = new Point(304, 182);
+            getTempButton.Name = "getTempButton";
+            getTempButton.Size = new Size(94, 29);
+            getTempButton.TabIndex = 0;
+            getTempButton.Text = "Get temp";
+            getTempButton.UseVisualStyleBackColor = true;
+            getTempButton.Click += getTempButton_Click;
             // 
-            // textBox1
+            // temperatureOutput
             // 
-            textBox1.Location = new Point(463, 184);
-            textBox1.Name = "textBox1";
-            textBox1.ReadOnly = true;
-            textBox1.Size = new Size(125, 27);
-            textBox1.TabIndex = 1;
-            textBox1.Text = "No data";
+            temperatureOutput.Location = new Point(463, 184);
+            temperatureOutput.Name = "temperatureOutput";
+            temperatureOutput.ReadOnly = true;
+            temperatureOutput.Size = new Size(125, 27);
+            temperatureOutput.TabIndex = 1;
+            temperatureOutput.Text = "No data";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(textBox1);
-            Controls.Add(button1);
+            Controls.Add(temperatureOutput);
+            Controls.Add(getTempButton);
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);
@@ -66,7 +66,7 @@
 
         #endregion
 
-        private Button button1;
-        private TextBox textBox1;
+        private Button getTempButton;
+        private TextBox temperatureOutput;
     }
 }

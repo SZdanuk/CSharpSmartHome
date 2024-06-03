@@ -1,5 +1,6 @@
-using CSharpSmartHomeCore;
+//using CSharpSmartHomeCore;
 using CSharpSmartHomeApplication;
+using CSharpSmartHomeCore;
 
 namespace CSharpSmartHome
 {
@@ -10,14 +11,14 @@ namespace CSharpSmartHome
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void getTempButton_Click(object sender, EventArgs e)
         {
 
-            //var thermometerFactory = new ThermometerFactory();
-            //var thermometer = thermometerFactory.CreateThermometer(ThermometerType.I2C);
-            //var temperature = thermometer.GetTemperature();
+            var thermometerFactory = new ThermometerFactory();
+            var thermometer = thermometerFactory.CreateThermometer(ThermometerType.Internet);
+            var temperature = thermometer.GetTemperature();
 
-            //textBox1.Text = temperature.ToString();
+            temperatureOutput.Text = temperature.ToString() + "°C";
 
         }
     }

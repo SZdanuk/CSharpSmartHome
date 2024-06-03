@@ -1,3 +1,6 @@
+using CSharpSmartHomeApplication;
+using CSharpSmartHomeCore;
+
 namespace CSharpSmartHome
 {
     internal static class Program
