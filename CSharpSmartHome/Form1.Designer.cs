@@ -28,12 +28,44 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            temperatureInfo = new TextBox();
+            getTemperatureButton = new Button();
+            SuspendLayout();
+            // 
+            // temperatureInfo
+            // 
+            temperatureInfo.Location = new Point(234, 40);
+            temperatureInfo.Name = "temperatureInfo";
+            temperatureInfo.ReadOnly = true;
+            temperatureInfo.Size = new Size(125, 27);
+            temperatureInfo.TabIndex = 0;
+            // 
+            // getTemperatureButton
+            // 
+            getTemperatureButton.Location = new Point(30, 38);
+            getTemperatureButton.Name = "getTemperatureButton";
+            getTemperatureButton.Size = new Size(182, 29);
+            getTemperatureButton.TabIndex = 1;
+            getTemperatureButton.Text = "Get Temperature";
+            getTemperatureButton.UseVisualStyleBackColor = true;
+            getTemperatureButton.Click += getTemperatureButton_Click;
+            // 
+            // Form1
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Controls.Add(getTemperatureButton);
+            Controls.Add(temperatureInfo);
+            Name = "Form1";
+            Text = "Form1";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private TextBox temperatureInfo;
+        private Button getTemperatureButton;
     }
 }

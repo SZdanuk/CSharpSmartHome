@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CSharpSmartHomeApplication\CSharpSmartHomeApplication.csproj" />
+    <ProjectReference Include="..\CSharpSmartHomeHardware\CSharpSmartHomeHardware.csproj" />
+  </ItemGroup>
+
 </Project>
