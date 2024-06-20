@@ -9,66 +9,57 @@ namespace CSharpSmartHomeHardware.Equipment
 {
     public class I2CThermometer : IThermometer
     {
-
-        //static Thread readThread = new Thread(Read);
-        static SerialPort serialPort = new SerialPort("COM10", 115200, Parity.None, 8, StopBits.One);
-
+        
         public I2CThermometer()
         {
             TurnOn();
         }
 
-
-
-        static bool _continue = false;
         public float GetTemperature()
         {
-            byte[] buffer = new byte[10];
 
-            serialPort.ReadTimeout = 5000;
-            serialPort.WriteTimeout = 5000;
-            
-            serialPort.Open(); 
-            serialPort.Write("Test");
-            //string tempValueString = serialPort.ReadExisting();
-            //if(serialPort.BytesToRead != 0)serialPort.Read(buffer, 0, buffer.Length);
+            SerialCommunication sc = new SerialCommunication();
 
-            string val = null;
+            sc.OpenSerialPort();
+            sc.SendFrame("GetTemp:1");
+            string dataReceived = sc.ReceiveFrame();
+            sc.CloseSerialPort();
 
-            //if(serialPort.BytesToRead != 0)
-            val = serialPort.ReadLine();
-            serialPort.Close();
-
-            byte[] bytes = Encoding.UTF8.GetBytes(val);
-            float fvalue= bytes[1]*10 + bytes[2] + (float)bytes[3]/10 + (float)bytes[3] / 100;
-            float tempValue = buffer[1] + buffer[2]/10;
-            //if (float.TryParse(tempValueString, out float temperatureFloat) == true) temperatureFloat = 0; //error?
-
-
-            return 36.6F;
+            return GetTemperatureFromReceivedData(dataReceived) ;
 
         }
 
-        //public static void Read()
-        //{
-        //    while (_continue)
-        //    {
-        //        try
-        //        {
-        //            string messageReceived = serialPort.ReadLine();
-                    
-        //        }
-        //        catch (TimeoutException) { }
-        //    }
-        //}
+        static private float GetTemperatureFromReceivedData(string dataReceived)//Gdzieś indziej ta metoda, ponad hardware
+        {
+            float tempFloat;
+
+            try
+            {
+                if (dataReceived.Contains("Temp:"))
+                {
+                    dataReceived = dataReceived.Substring("Temp:".Length);
+                }
+
+                if (float.TryParse(dataReceived, out tempFloat))
+                {
+                    return tempFloat;
+                }
+                else
+                {
+                    throw new Exception("Can't convert temperature value to float");
+                }
+            }
+            catch
+            {
+                tempFloat = 0F;
+            }
+
+            return 0F;
+        }
+
 
         public bool TurnOn()
         {
-
-            //SerialCommunication sc = new SerialCommunication();
-            //sc.SerialPortInit();
-            //sc.OpenSerialPort();
-            //sc.ReceiveData();
 
             return false;   //no error
 

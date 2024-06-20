@@ -11,36 +11,26 @@ namespace CSharpSmartHomeHardware.Communication
 
     public enum FrameComponents : byte
     {
-        StartByteSend = 0xAA,
-        EndByteSend = 0xBB,
-        EndByte2Send = 0xCC,
-        StartByteReceive = 0xDD,
-        EndByteReceive = 0xEE,
-        EndByte2Receive = 0xFF
+        StartByteSend = 0x2A,
+        EndByteSend = 0x2B,
+        EndByte2Send = 0x2C,
+        StartByteReceive = 0x2D,
+        EndByteReceive = 0x2E,
+        EndByte2Receive = 0x2F
 
     }
 
 
     public class SerialCommunication
     {
-        //SerialPort("COM10", 115200, Parity.None, 8, StopBits.One);
-        //private SerialPort sp;
-        //private SerialPort sp = new SerialPort("COM10", 115200, Parity.None, 8, StopBits.One);
-        private SerialPort serialPort;
-                
 
-        //public SerialCommunication(SerialPort sp)
-        //{
-        //    try
-        //    {
-        //        SerialPort serialPort = sp;
-        //    }
-        //    catch
-        //    {
-        //        throw new Exception("serialPort in class construtor must be not-null");
-        //    }
+        static SerialPort serialPort = new SerialPort("COM10", 115200, Parity.None, 8, StopBits.One);
 
-        //}
+        public SerialCommunication()
+        {
+            SerialPortInit();
+        }
+
 
         public enum SerialPortError
         {
@@ -48,9 +38,8 @@ namespace CSharpSmartHomeHardware.Communication
             PortNotOpen
         }
 
-        public void SerialPortInit()
+        private void SerialPortInit()
         {
-            serialPort = new SerialPort("COM10", 115200, Parity.None, 8, StopBits.One);
             serialPort.ReadTimeout = 5000;
             serialPort.WriteTimeout = 5000;
         }
@@ -62,8 +51,7 @@ namespace CSharpSmartHomeHardware.Communication
 
             try
             {
-                if(serialPort.IsOpen == false)  serialPort.Open();
-                //if (serialPort.IsOpen == false) return SerialPortError.PortNotOpen;
+                if(serialPort.IsOpen == false)serialPort.Open();
             }
             catch
             {
@@ -101,11 +89,10 @@ namespace CSharpSmartHomeHardware.Communication
         string ReceiveData()
         {
 
-            string data = null;
+            string data = "";
 
             try
             {
-                //data = serialPort.ReadLine();
                 data = serialPort.ReadLine();
             }
             catch(TimeoutException)
@@ -130,7 +117,8 @@ namespace CSharpSmartHomeHardware.Communication
         {
 
             SerialCommunicationFrame frame = new SerialCommunicationFrame();
-            string dataReceived = ReceiveData();
+            string dataReceived = frame.DecodeFrame(Encoding.ASCII.GetBytes(ReceiveData()));
+
 
             return dataReceived;
         }
@@ -166,7 +154,7 @@ namespace CSharpSmartHomeHardware.Communication
         public string DecodeFrame(byte[] frame)
         {
 
-            if (frame.Length < 4 || frame[0] != (byte)FrameComponents.StartByteReceive || frame[frame.Length - 1] != (byte)FrameComponents.EndByteReceive)
+            if (frame.Length < 4 || (byte)frame[0] != (byte)FrameComponents.StartByteReceive || (byte)frame[frame.Length - 1] != (byte)FrameComponents.EndByteReceive)
             {
                 return "Invalid frame";
             }
@@ -177,7 +165,7 @@ namespace CSharpSmartHomeHardware.Communication
                 return "Checksum error";
             }
 
-            byte[] dataBytes = new byte[frame.Length - 4];
+            byte[] dataBytes = new byte[frame.Length - 3];
             Array.Copy(frame, 1, dataBytes, 0, dataBytes.Length);
 
             string data = Encoding.ASCII.GetString(dataBytes);
