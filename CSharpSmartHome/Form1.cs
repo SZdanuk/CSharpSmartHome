@@ -14,7 +14,7 @@ namespace CSharpSmartHome
         {
 
             var thermometerFactory = new ThermometerFactory();
-            var thermometer = thermometerFactory.CreateThermometer(ThermometerType.Internet);
+            var thermometer = thermometerFactory.CreateThermometer(ThermometerType.I2C);
             var temperature = thermometer.GetTemperature();
 
             temperatureInfo.Text = temperature.ToString() + "°C";
