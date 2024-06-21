@@ -41,7 +41,8 @@ namespace CSharpSmartHomeHardware.Communication
         {
             NoError,
             PortNotOpen,
-            PortComAlreadyOpen
+            PortComAlreadyOpen,
+            CannotOpenComPort
         }
 
         public enum FrameError
@@ -69,8 +70,15 @@ namespace CSharpSmartHomeHardware.Communication
             }
             else
             {
-
-                serialPort.Open();
+                
+                try
+                {
+                    serialPort.Open();
+                }
+                catch
+                {
+                    return SerialPortError.CannotOpenComPort;
+                }
                 return SerialPortError.NoError;
 
             }
@@ -165,6 +173,7 @@ namespace CSharpSmartHomeHardware.Communication
 
     public class SerialCommunicationFrame
     { 
+         
         /*
          * Header
          * Data
@@ -237,32 +246,26 @@ namespace CSharpSmartHomeHardware.Communication
 
         public float GetTemperatureFromReceivedFrame(string dataReceived)
         {
+
             float tempFloat;
 
-            try
+            if (dataReceived.Contains("Temp:"))
             {
-                if (dataReceived.Contains("Temp:"))
-                {
-                    dataReceived = dataReceived.Substring("Temp:".Length);
-                }
-
-                if (float.TryParse(dataReceived, out tempFloat))
-                {
-                    return tempFloat;
-                }
-                else
-                {
-                    throw new Exception("Can't convert temperature value to float");
-                }
+                dataReceived = dataReceived.Substring("Temp:".Length);
             }
-            catch
+            else
             {
-                tempFloat = 0F;
+                return tempFloat = float.NaN;
             }
 
-            return 0F;
+            if (float.TryParse(dataReceived, out tempFloat))
+            {
+                return tempFloat;
+            }
+            else
+            {
+                return tempFloat = float.NaN;
+            }
         }
-
-
     }
 }

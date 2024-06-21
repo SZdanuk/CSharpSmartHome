@@ -17,6 +17,19 @@ namespace CSharpSmartHomeHardware.Equipment
 
         #endregion
 
+        #region Enums
+
+        enum ThermometerError
+        {
+        
+            NoError,
+            TemperatureReadError
+        
+        }
+
+
+        #endregion
+
         #region Constructor
         public I2CThermometer()
         {
@@ -30,24 +43,32 @@ namespace CSharpSmartHomeHardware.Equipment
         public float GetTemperature()
         {
 
-            TurnOn();
+            if(TurnOn() == ThermometerError.TemperatureReadError)
+            {
+                return float.NaN;
+            }
             SendFrame("GetTemp:1");
             ReceiveFrame();
             TurnOff();
 
             SerialCommunicationFrame sf = new SerialCommunicationFrame();
-            return sf.GetTemperatureFromReceivedFrame(receivedData.);
+            return sf.GetTemperatureFromReceivedFrame(receivedData);
 
         }
 
         #endregion
 
         #region PrivateMethods
-        private void TurnOn()
+        private ThermometerError TurnOn()
         {
 
             sc = new SerialCommunication();
-            sc.OpenSerialPort();
+            if(sc.OpenSerialPort() != SerialCommunication.SerialPortError.NoError)
+            {
+                return ThermometerError.TemperatureReadError;
+            }
+
+            return ThermometerError.NoError;
 
         }
 
