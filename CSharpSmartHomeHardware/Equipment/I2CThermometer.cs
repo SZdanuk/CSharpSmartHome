@@ -10,48 +10,69 @@ namespace CSharpSmartHomeHardware.Equipment
 {
     public class I2CThermometer : IThermometer
     {
-        
+        #region Fields
+
+        private SerialCommunication sc;
+        private string receivedData;
+
+        #endregion
+
+        #region Constructor
         public I2CThermometer()
         {
-            TurnOn();
+
         }
+
+        #endregion
+
+        #region PublicMethods
 
         public float GetTemperature()
         {
 
-            SerialCommunication sc = new SerialCommunication();
-            sc.OpenSerialPort();
-            sc.SendFrame("GetTemp:1");
-            string dataReceived = sc.ReceiveFrame();
-            sc.CloseSerialPort();
+            TurnOn();
+            SendFrame("GetTemp:1");
+            ReceiveFrame();
+            TurnOff();
 
             SerialCommunicationFrame sf = new SerialCommunicationFrame();
-            return sf.GetTemperatureFromReceivedFrame(dataReceived);
+            return sf.GetTemperatureFromReceivedFrame(receivedData.);
 
         }
 
+        #endregion
+
+        #region PrivateMethods
+        private void TurnOn()
+        {
+
+            sc = new SerialCommunication();
+            sc.OpenSerialPort();
+
+        }
+
+        private void TurnOff()
+        {
+
+            sc.CloseSerialPort();
+
+        }
+
+        private void SendFrame(string frame)
+        {
+
+            sc.SendFrame(frame);
+
+        }
         
-
-
-        public bool TurnOn()
+        private void ReceiveFrame()
         {
 
-            return false;   //no error
+            receivedData = sc.ReceiveFrame().data;
 
         }
 
-
-        public bool TurnOff()
-        {
-
-            return false;   //no error
-
-        }
-
-        ~I2CThermometer()
-        {
-            TurnOff();
-        }
+        #endregion
 
     }
 }

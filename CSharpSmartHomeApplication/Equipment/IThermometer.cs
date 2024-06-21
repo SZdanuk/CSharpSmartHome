@@ -9,8 +9,6 @@ namespace CSharpSmartHomeApplication.Equipment;
 public interface IThermometer
 {
 
-    bool TurnOn();
-    bool TurnOff();
     float GetTemperature();
 
 }

@@ -21,44 +21,59 @@ namespace CSharpSmartHomeHardware.Communication
     }
 
 
-    public class SerialCommunication
+    public class SerialCommunication : IDisposable
     {
+        #region Fields
 
-        static SerialPort serialPort = new SerialPort("COM10", 115200, Parity.None, 8, StopBits.One);
+        private SerialPort serialPort;
 
+        #endregion
+
+        #region Constructor
         public SerialCommunication()
         {
             SerialPortInit();
         }
+        #endregion
 
-
+        #region Enums
         public enum SerialPortError
         {
             NoError,
-            PortNotOpen
+            PortNotOpen,
+            PortComAlreadyOpen
         }
 
-        private void SerialPortInit()
+        public enum FrameError
         {
-            serialPort.ReadTimeout = 5000;
-            serialPort.WriteTimeout = 5000;
+
+            NoError,
+            InvalidFrame,
+            ChecksumError,
+            Timeout        
+        
         }
 
 
+        #endregion
 
+        #region PublicMethods
         public SerialPortError OpenSerialPort()
         {
 
-            try
+            if (serialPort.IsOpen)
             {
-                if(serialPort.IsOpen == false)serialPort.Open();
+
+                return SerialPortError.PortComAlreadyOpen;
+
             }
-            catch
+            else
             {
-                throw new Exception("Port opening error");
+
+                serialPort.Open();
+                return SerialPortError.NoError;
+
             }
-            
-            return SerialPortError.NoError;
 
         }
 
@@ -76,6 +91,35 @@ namespace CSharpSmartHomeHardware.Communication
             return SerialPortError.NoError;
             
         }
+        
+        public FrameError SendFrame(string frameToSend)
+        {
+
+            SerialCommunicationFrame frame = new SerialCommunicationFrame();
+            byte[] dataToSend = frame.BuildFrame(frameToSend);
+            SendData(dataToSend);
+
+            return FrameError.NoError;
+        }
+
+        public (FrameError error, string data) ReceiveFrame()
+        {
+
+            SerialCommunicationFrame frame = new SerialCommunicationFrame();
+            string dataReceived = frame.DecodeFrame(Encoding.ASCII.GetBytes(ReceiveData()));
+
+            return (FrameError.NoError, dataReceived);
+        }
+
+        #endregion
+
+        #region PrivateMethods
+        private void SerialPortInit()
+        {
+            serialPort = new SerialPort("COM10", 115200, Parity.None, 8, StopBits.One);
+            serialPort.ReadTimeout = 5000;
+            serialPort.WriteTimeout = 5000;
+        }
 
         SerialPortError SendData(byte[] dataToSend)
         {
@@ -89,13 +133,13 @@ namespace CSharpSmartHomeHardware.Communication
         string ReceiveData()
         {
 
-            string data = "";
+            string data = String.Empty;
 
             try
             {
                 data = serialPort.ReadLine();
             }
-            catch(TimeoutException)
+            catch (TimeoutException)
             {
                 data = "timeout";
             }
@@ -103,30 +147,23 @@ namespace CSharpSmartHomeHardware.Communication
             return data;
         }
 
-        public bool SendFrame(string frameToSend)
+        #endregion
+
+        #region Disposable  
+
+        public void Dispose()
         {
 
-            SerialCommunicationFrame frame = new SerialCommunicationFrame();
-            byte[] dataToSend = frame.BuildFrame(frameToSend);
-            SendData(dataToSend);
+            CloseSerialPort();
 
-            return false;
         }
 
-        public string ReceiveFrame()
-        {
 
-            SerialCommunicationFrame frame = new SerialCommunicationFrame();
-            string dataReceived = frame.DecodeFrame(Encoding.ASCII.GetBytes(ReceiveData()));
-
-
-            return dataReceived;
-        }
-
+        #endregion
 
     }
 
-    class SerialCommunicationFrame
+    public class SerialCommunicationFrame
     { 
         /*
          * Header
