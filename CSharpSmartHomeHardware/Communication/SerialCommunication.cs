@@ -198,6 +198,34 @@ namespace CSharpSmartHomeHardware.Communication
             return checksum;
         }
 
+        public float GetTemperatureFromReceivedFrame(string dataReceived)
+        {
+            float tempFloat;
+
+            try
+            {
+                if (dataReceived.Contains("Temp:"))
+                {
+                    dataReceived = dataReceived.Substring("Temp:".Length);
+                }
+
+                if (float.TryParse(dataReceived, out tempFloat))
+                {
+                    return tempFloat;
+                }
+                else
+                {
+                    throw new Exception("Can't convert temperature value to float");
+                }
+            }
+            catch
+            {
+                tempFloat = 0F;
+            }
+
+            return 0F;
+        }
+
 
     }
 }
